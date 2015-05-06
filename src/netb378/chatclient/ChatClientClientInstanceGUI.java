@@ -22,6 +22,6 @@ package netb378.chatclient;
  *
  * @author Biser Perchinkov F44307
  */
-public class ChatClientClientInstance {
-    // 
+public class ChatClientClientInstanceGUI {
+    
 }

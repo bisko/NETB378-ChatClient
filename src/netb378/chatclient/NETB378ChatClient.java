@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2015 Biser Perchinkov
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 /**
  * Variant 1. Simple chat system
  * Write a chat server and chat client. The server allows 
@@ -15,6 +33,8 @@ public class NETB378ChatClient {
 
     static Boolean startServer = false;
     static Boolean showHelp = false;
+    
+    private static ChatClientServerInstance serverInstance = null;
     
     /**
      * @param args Arguments to the application
@@ -34,7 +54,7 @@ public class NETB378ChatClient {
             }
         }
         
-        if (args.length > 0 || showHelp) {
+        if (args.length > 1 || showHelp) {
             System.out.println(   "Simple Chat client help system\n"
                                 + "-------------------------------------------\n"
                                 + "Command line parameters for the application\n"
@@ -46,6 +66,7 @@ public class NETB378ChatClient {
        
         if (startServer) {
             // instance the server
+            serverInstance = new ChatClientServerInstance();
         }
         else {
             // start the GUI 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Biser Perchinkov
+ * Copyright (C) 2015 bisko
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package netb378.chatclient;
+
+import java.lang.System;
 
 /**
  *
- * @author Biser Perchinkov F44307
+ * @author bisko
  */
-public class ChatClientClientInstance {
-    // 
+public class Log {
+    static public void log(String message) {
+        System.out.print("LOG: ");
+        System.out.println(message);
+    }
 }
