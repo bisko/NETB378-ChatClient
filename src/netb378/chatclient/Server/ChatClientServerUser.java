@@ -34,8 +34,8 @@ public class ChatClientServerUser implements Runnable {
     
     private Socket _socket = null;
     private ChatClientServer _server = null;
-    private String username = "";
-    private Integer id = 0;
+    public  String username = "";
+    public  Integer id = 0;
     
     private DataInputStream streamIn = null;
     private DataOutputStream streamOut = null;
@@ -62,14 +62,11 @@ public class ChatClientServerUser implements Runnable {
             Log.log(""+ex);
         }        
         
-        this.addClientToServerList();
-        
         this.startThread();
     }
     
     
     private void addClientToServerList() {
-        Log.log("Adding client to server list");
         this._server.addUser(this);
     }
     
@@ -79,12 +76,18 @@ public class ChatClientServerUser implements Runnable {
         this._server.removeUser(this);
         
         try {
+            
+            this.streamIn.close();
+            this.streamOut.close();
+            
             // close the socket
             this._socket.close();
         } catch (IOException ex) {
             Log.log("Problem closing the socket: "+ex);
             Log.log(""+this._socket);
         }
+        
+        this._socket = null;
     }
     
     public void startThread() {
@@ -98,11 +101,11 @@ public class ChatClientServerUser implements Runnable {
         Boolean done = false;
         
         while (!done) {
+            Log.log("Reading..");
             try {
-                String line = this.streamIn.readUTF();
-                
+                // todo - readUTF
+                String line = this.streamIn.readLine();
                 done = this._server.handleMessage(this.id, line);
-                
             } catch (IOException ex) {
                 Log.log("Problem reading info from socket :/");
                 Log.log(""+this._socket);
@@ -111,6 +114,19 @@ public class ChatClientServerUser implements Runnable {
         }
         
         this.removeClientFromServerList(); 
-   }
+    }
     
+    public synchronized void send(String message) {
+        if (this._socket != null) {
+            try {
+                this.streamOut.writeUTF(message.trim()+"\n");
+                this.streamOut.flush();
+            }
+            catch(IOException ex) {
+                Log.log("Unable to write to socket: ");
+                Log.log(ex.getMessage());
+            }
+        }
+    }
+   
 }
