@@ -35,6 +35,7 @@ public class NETB378ChatClient {
     static Boolean showHelp = false;
     
     private static ChatClientServerInstance serverInstance = null;
+    private static ChatClientClientInstance clientInstance = null;
     
     /**
      * @param args Arguments to the application
@@ -69,7 +70,7 @@ public class NETB378ChatClient {
             serverInstance = new ChatClientServerInstance();
         }
         else {
-            // start the GUI 
+            clientInstance = new ChatClientClientInstance();
         }
     }
 }
