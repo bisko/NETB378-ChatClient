@@ -55,7 +55,11 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
     private void resetFields() {
         this._userListModel.clear();
         jTextArea1.setText("");
+        
+        // wrap the text in the text area, so we don't get weird looking text
+        jTextArea1.setLineWrap(true);
         jTextArea1.setWrapStyleWord(true);
+        
         jTextArea1.setEditable(false);
         jTextField1.setText("");
         jTextField1.requestFocus();
