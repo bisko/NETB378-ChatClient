@@ -217,7 +217,7 @@ public final class ChatClientClient {
     }
 
     void handleServerDisconnect() {
-        this.clientForm.appendTAMessage("We have been disconnected from the server!");
         this.clientForm.disableAndClearInputs();
+        this.clientForm.appendTAMessage("We have been disconnected from the server!");
     }
 }
