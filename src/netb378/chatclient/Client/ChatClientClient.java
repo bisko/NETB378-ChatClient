@@ -145,6 +145,10 @@ public final class ChatClientClient {
 
                         this.clientForm.protocolNickChange(payloadParts[0], payloadParts[1]);
                         break;
+                    case "FORCENICK":
+                        this.username = payload;
+                        this.clientForm.protocolForceNick(payload);
+                        break;
                     case "MSG":
 
                         this.clientForm.protocolMessage(payload);

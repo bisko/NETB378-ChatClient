@@ -49,15 +49,7 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         
         jLabel2.setText(this._client.getServerInfo());
         
-        String titleText = "Connected to server: " + this._client.getServerInfo();
-        
-        if (this._client.isThisClientAHost()) {
-            titleText += " (server host) ";
-        }
-        
-        titleText += " using username: " + this._client.username;
-        
-        this.setTitle(titleText);
+        this.updateWindowTitle();
     }
     
     private void resetFields() {
@@ -280,5 +272,22 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         jButton1.setEnabled(false);
         this.setTitle("Disconnected from server");
         jLabel2.setText("--");
+    }
+
+    void protocolForceNick(String payload) {
+        this.appendTAMessage("Colliding username, changed to: "+payload);
+        this.updateWindowTitle();
+    }
+
+    private void updateWindowTitle() {
+        String titleText = "Connected to server: " + this._client.getServerInfo();
+        
+        if (this._client.isThisClientAHost()) {
+            titleText += " (server host) ";
+        }
+        
+        titleText += " using username: " + this._client.username;
+        
+        this.setTitle(titleText);
     }
 }

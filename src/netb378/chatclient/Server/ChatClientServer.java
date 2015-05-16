@@ -19,6 +19,7 @@ package netb378.chatclient.Server;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Hashtable;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import netb378.chatclient.Log;
@@ -106,7 +107,13 @@ public class ChatClientServer {
                     String othersNotification = command+" "+this.userList.get(id).username+" "+payload;
 
                     switch(command) {
-                        case "NICK":
+                        case "NICK":                         
+                            // if we have an existing user with that username
+                            // we change the username and send it back to the user
+                            if (this.checkExistingUser(payload)) {
+                                payload = this.getNonCollidingUsername(payload);
+                                this.notifySpecificUser(id, "FORCENICK "+payload);
+                            }
                             
                             if (this.userList.get(id).username.equals("")) {
                                 // the user is now setting the username
@@ -206,6 +213,30 @@ public class ChatClientServer {
         }
         
         return returnValue;
+    }
+
+    private boolean checkExistingUser(String payload) {
+        for(Integer idx : this.userList.keySet()) {
+            if (!this.userList.get(idx).username.isEmpty()) {
+                if(this.userList.get(idx).username.equals(payload)) {
+                    return true;
+                }
+            }    
+        }
+        
+        return false;
+    }
+
+    private String getNonCollidingUsername(String payload) {
+        Random rnd = new Random();
+        
+        String resultingUsername = payload;
+        
+        while (this.checkExistingUser(resultingUsername)) {
+            resultingUsername = payload + "_"+ rnd.nextInt(999999);;
+        }
+               
+        return resultingUsername;
     }
 
     private static class InvalidCommandException extends Exception {
