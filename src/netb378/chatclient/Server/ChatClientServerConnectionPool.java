@@ -46,14 +46,6 @@ public class ChatClientServerConnectionPool implements Runnable {
         
         this.startThread();
         
-        while(true) {
-            try {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException ex) {
-                Log.log("Interrupted sleep");
-            }
-        }
         // temporary
         //Log.log("Exiting...");
         //System.exit(0);

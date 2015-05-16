@@ -104,22 +104,21 @@ public class ChatClientServerUser implements Runnable {
             Log.log("Reading..");
             try {
                 // todo - readUTF
-                String line = this.streamIn.readLine();
+                String line = this.streamIn.readUTF();
                 done = this._server.handleMessage(this.id, line);
             } catch (IOException ex) {
-                Log.log("Problem reading info from socket :/");
+                Log.log("Serverly - Problem reading info from socket :/");
                 Log.log(""+this._socket);
                 done = true;
+                this.removeClientFromServerList(); 
             }
         }
-        
-        this.removeClientFromServerList(); 
     }
     
     public synchronized void send(String message) {
         if (this._socket != null) {
             try {
-                this.streamOut.writeUTF(message.trim()+"\n");
+                this.streamOut.writeUTF(message.trim());
                 this.streamOut.flush();
             }
             catch(IOException ex) {

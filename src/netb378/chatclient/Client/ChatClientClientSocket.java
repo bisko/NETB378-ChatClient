@@ -37,6 +37,9 @@ public class ChatClientClientSocket implements Runnable {
     private DataInputStream streamIn = null;
     private DataOutputStream streamOut = null;
     
+    private String server = "";
+    private Integer port = 0;
+    
     
     public ChatClientClientSocket (String server, Integer port, ChatClientClient _client) throws IOException {
         if (this._socket != null) {
@@ -48,12 +51,20 @@ public class ChatClientClientSocket implements Runnable {
         
         this._socket = new Socket(server, port);
         
-        this.initializeSocket();
+        this.initializeSocket(_client);
+        
+        this.server = server;
+        this.port = port;
+    }
+    
+    public String getServerConnectString() {
+        return this.server+":"+port;
     }
     
     
-    private void initializeSocket() {
+    private void initializeSocket(ChatClientClient _client) {
         Log.log("initializing socket");
+        this._client = _client;
         // add streams
         try {
             this.streamIn = new DataInputStream(new 
@@ -70,15 +81,18 @@ public class ChatClientClientSocket implements Runnable {
         this.startThread();
     }
     public void run () {
-        while (this._thread != null) {
+        while (this._socket != null) {
             Log.log("Reading..");
             try {
-                // todo - readUTF
-                String line = this.streamIn.readLine();
+                String line = this.streamIn.readUTF();
                 this._client.handleServerMessage(line);
             } catch (IOException ex) {
+                // mainly this happens when the server goes bye-bye
+                // and we should show a message that we were disconnected
                 Log.log("Problem reading info from socket :/");
                 Log.log(""+this._socket);
+                this._client.handleServerDisconnect();
+                this.close();
             }   
         }
     }
@@ -93,7 +107,7 @@ public class ChatClientClientSocket implements Runnable {
     public synchronized void send(String message) {
         if (this._socket != null) {
             try {
-                this.streamOut.writeUTF(message.trim()+"\n");
+                this.streamOut.writeUTF(message.trim());
                 this.streamOut.flush();
             }
             catch(IOException ex) {
@@ -101,5 +115,21 @@ public class ChatClientClientSocket implements Runnable {
                 Log.log(ex.getMessage());
             }
         }
+    }
+    
+    public synchronized void close() {
+        try{
+            this.streamIn.close();
+            this.streamOut.close();
+            
+            // close the socket
+            this._socket.close();
+        }
+        catch (IOException ex) {
+            Log.log("Unable to close client socket: "+ex.getMessage());
+        }
+        
+        this._socket = null;
+        this._thread = null;
     }
 }

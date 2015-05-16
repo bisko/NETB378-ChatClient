@@ -16,17 +16,47 @@
  */
 package netb378.chatclient.Client;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.DefaultListModel;
+import netb378.chatclient.Log;
+
 /**
  *
  * @author bisko
  */
 public class ChatClientClientMainWindow extends javax.swing.JFrame {
-
+    private ChatClientClient _client = null;
+    private DefaultListModel _userListModel = null;
     /**
      * Creates new form ChatClientClientMainWindow
      */
-    public ChatClientClientMainWindow() {
+    public ChatClientClientMainWindow(ChatClientClient _client) {
+        
+        
+        this._client = _client;
+        
         initComponents();
+        
+        // change the jList2 model, because netbeans forces me to do it :) 
+        // uneditable code in the initComponents method.
+        this._userListModel = new DefaultListModel();
+        jList2.setModel(this._userListModel);
+       
+        
+        this.resetFields();
+        this._client.formInitted(this);
+        
+        jLabel2.setText(this._client.getServerInfo());
+    }
+    
+    private void resetFields() {
+        this._userListModel.clear();
+        jTextArea1.setText("");
+        jTextArea1.setWrapStyleWord(true);
+        jTextArea1.setEditable(false);
+        jTextField1.setText("");
+        
     }
 
     /**
@@ -38,45 +68,63 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList2 = new javax.swing.JList();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
         });
-        jScrollPane1.setViewportView(jList1);
 
-        jTextField1.setText("jTextField1");
-
-        jButton1.setText("jButton1");
+        jButton1.setText("Send");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
+
+        jList2.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jList2);
+
+        jLabel1.setText("Server:");
+
+        jLabel2.setFont(jLabel2.getFont().deriveFont((jLabel2.getFont().getStyle() | java.awt.Font.ITALIC)));
+        jLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextField1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -85,60 +133,140 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                        .addContainerGap())))
+                            .addComponent(jButton1)))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this._client.handleUserInput(jTextField1.getText());
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+        this._client.handleUserInput(jTextField1.getText());
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(ChatClientClient _client) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ChatClientClientMainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ChatClientClientMainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ChatClientClientMainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ChatClientClientMainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ChatClientClientMainWindow().setVisible(true);
+                new ChatClientClientMainWindow(_client).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JList jList1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JList jList2;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+
+    void protocolJoinUser(String payload) {
+        this._userListModel.addElement(payload);
+        this.appendTAMessage("Joined user \""+payload+"\"");
+    }
+
+    void protocolNickChange(String payloadPart, String payloadPart0) {
+        Log.log("Nick change from "+payloadPart+" to "+payloadPart0);
+        
+        if (payloadPart == this._client.username) {
+            this._client.username = payloadPart0;
+        }
+        
+        for (Integer i = 0; i < this._userListModel.getSize(); i++) {
+            if (this._userListModel.getElementAt(i).equals(payloadPart)) {
+                this._userListModel.setElementAt(payloadPart0, i);
+            }
+        }
+        
+        this.appendTAMessage("User \""+payloadPart+"\" is now known as \""+payloadPart0+"\"");
+    }
+
+
+    void protocolNamesList(String payload) {
+        this._userListModel.clear();
+        
+        String[] names = payload.split(" ");
+        
+        for (String name : names) {
+            this._userListModel.addElement(name);
+        }
+    }
+
+    void invalidServerMessage(String payload) {
+        this.appendTAMessage("Invalid message from server: "+payload);
+        
+    }
+    
+    void appendTAMessage(String payload) {
+        
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        
+        payload = "["+strDate+"] "+payload.trim();
+        
+        this.jTextArea1.append(payload+"\n");
+        this.jTextArea1.setCaretPosition(this.jTextArea1.getText().length());
+    }
+
+    void protocolMessage(String payload) {
+        
+        // replace the first space with a separator in order to show it in the window
+        payload = payload.replaceFirst(" ", ": ");
+        
+        this.appendTAMessage(payload);
+    }
+
+    void protocolQuit(String payload) {
+        
+        // used just to extract the username from the payload
+        String[] payloadParts = payload.split(" ");
+        
+        // lazy message formatting
+        payload = payload.replaceFirst(" ", ": ");
+        
+        for (Integer i = 0; i < this._userListModel.getSize(); i++) {
+            if (this._userListModel.getElementAt(i).equals(payloadParts[0])) {
+                this._userListModel.setElementAt(payloadParts[0], i);
+            }
+        }
+        
+        this.appendTAMessage("QUIT: "+payload);
+    }
+
+    void clearInputField() {
+        jTextField1.setText("");
+    }
+
+    void disableAndClearInputs() {
+        this.clearInputField();
+        this.resetFields();
+        
+        jTextField1.setEnabled(false);
+        jButton1.setEnabled(false);
+    }
 }

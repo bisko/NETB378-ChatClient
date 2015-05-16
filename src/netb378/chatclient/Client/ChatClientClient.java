@@ -22,7 +22,10 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import netb378.chatclient.Log;
+import netb378.chatclient.Server.ChatClientServer;
 
 /**
  *
@@ -32,24 +35,19 @@ public final class ChatClientClient {
     
     private ChatClientServerConnectForm serverForm = null;
     private ChatClientClientSocket _clientSocket = null;
-    
+    private ChatClientClientMainWindow clientForm = null;
+    private ChatClientServer _serverInstance = null;
     
     public String username = "";
     
     public ChatClientClient() {
-        ChatClientServerConnectForm.main(this);
-        // show the server form
-            // try to connect
-            // if it fails
-                // send error to the frontend
-                // if unable to connect to a local address
-                    // offer to start a server
-            // if it succeeds 
-                // hide server form 
-                // show main chat form 
-        
+        ChatClientServerConnectForm.main(this);        
     }
     
+    
+    public String getServerInfo() {
+        return this._clientSocket.getServerConnectString();
+    }
     /**
      * 
      * @param server - the server to connect to
@@ -62,16 +60,21 @@ public final class ChatClientClient {
     }
     
     public void onConnectManagement() {
-        // inform the server for our username
-        this._clientSocket.send("NICK "+this.username);
-        
         // run the form hiding/showing
+        ChatClientClientMainWindow.main(this);
     }
     
-    public void startServer(Integer port) {
+    public void startServer(Integer port) throws Exception {
         // set local server instance
         // start the server
         // connect to the server when return true
+        
+        try {
+            this._serverInstance = new ChatClientServer(port);
+        }
+        catch(IOException ex) {
+            throw new Exception("Unable to initialize server :/");
+        }
     }
     
     /**
@@ -102,15 +105,119 @@ public final class ChatClientClient {
         } catch (SocketException e) {
             return false;
         }
-        
     }
-    
-    // init socket
-    // run main gui
-        // if no server found and address in the local addresses - start server
-        // kill server when closing the app
 
     void handleServerMessage(String line) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Boolean goodBye = false;
+        Log.log("Received message from server Saying: "+line);
+        
+        if (goodBye == false) {
+            
+            line = line.trim();
+            
+            // parse the message
+            Pattern messagePattern = Pattern.compile("^(\\w+)\\s(.*)");
+            Matcher messageMatches = messagePattern.matcher(line);
+
+            if (messageMatches.matches()) {
+                String command = messageMatches.group(1);
+                String payload = messageMatches.group(2);
+
+                command = command.trim();
+                payload = payload.trim();
+
+                if (payload.equals("")) {
+                    // fail command from server!
+                }
+
+                switch(command) {
+
+                    case "JOIN":
+                        this.clientForm.protocolJoinUser(payload);
+                        break;
+                    case "NICK":
+
+                        String[] payloadParts = payload.split(" ");
+
+                        this.clientForm.protocolNickChange(payloadParts[0], payloadParts[1]);
+                        break;
+                    case "MSG":
+
+                        this.clientForm.protocolMessage(payload);
+                        break;
+
+                    case "NAMES":
+
+                        this.clientForm.protocolNamesList(payload);
+                        break;
+                    case "QUIT":
+                        this.clientForm.protocolQuit(payload);
+                        break;
+                    default:
+                        Log.log("Unsupported command");
+                }
+            }
+            else {
+                this.clientForm.invalidServerMessage("Invalid format for command: \""+line+"\"");
+            }
+
+        }
+    }
+
+    void formInitted(ChatClientClientMainWindow form) {
+        this.clientForm = form;
+        
+        // inform the server for our username
+        this._clientSocket.send("NICK "+this.username);
+        this._clientSocket.send("NAMES server");
+    }
+
+    void handleUserInput(String payload) {
+        
+        payload = payload.trim();
+        if (payload.length() == 0) {
+            return;
+        }
+        
+        String serverPayload = "";
+        
+        if (payload.charAt(0) != '/') {
+            serverPayload = "MSG "+payload;
+        }
+        else {
+            // tokenize 
+            // parse the message
+            Pattern messagePattern = Pattern.compile("^(\\w+)\\s(.*)");
+            Matcher messageMatches = messagePattern.matcher(payload.substring(1));
+
+            if (messageMatches.matches()) {
+                String command = messageMatches.group(1);
+                String cmdPayload = messageMatches.group(2);
+
+                command = command.trim().toUpperCase();
+                cmdPayload = cmdPayload.trim();
+                
+                switch(command) {
+                    case "QUIT":
+                        serverPayload = command + " " + cmdPayload;
+                        
+                        this._clientSocket.send(serverPayload);
+                        this._clientSocket.close();
+                        System.exit(0);
+                        break;
+                    default:
+                        serverPayload = command + " " + cmdPayload;
+                }
+            }
+        }
+        
+       
+        this._clientSocket.send(serverPayload);
+        this.clientForm.clearInputField();
+    }
+
+    void handleServerDisconnect() {
+        this.clientForm.appendTAMessage("We have been disconnected from the server!");
+        this.clientForm.disableAndClearInputs();
     }
 }

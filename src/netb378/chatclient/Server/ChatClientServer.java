@@ -34,7 +34,7 @@ public class ChatClientServer {
     
     public Hashtable<Integer, ChatClientServerUser> userList = new Hashtable<Integer, ChatClientServerUser>();
        
-    public ChatClientServer(int port) {
+    public ChatClientServer(int port) throws IOException {
         
         // store the port the server will run on
         if (port > 0) {
@@ -47,6 +47,7 @@ public class ChatClientServer {
         catch (IOException ex) {
             Log.log("Unable to initialize server");
             Log.log(ex.getMessage());
+            throw ex;
         }
     }
     
@@ -125,7 +126,7 @@ public class ChatClientServer {
                                 throw new InvalidCommandException(command, payload);
                             }
                             
-                            this.notifyAllExcept(id, othersNotification);
+                            this.notifyAll(othersNotification);
                             break;
                             
                         case "NAMES":
@@ -161,6 +162,8 @@ public class ChatClientServer {
     public void removeUser(ChatClientServerUser user) {      
         // remove from list
         Log.log("Removed user from list");
+        
+        this.notifyAllExcept(user.id, "QUIT " + this.userList.get(user.id).username + " Connection reset by peer");
         this.userList.remove(user.id);
     }
 

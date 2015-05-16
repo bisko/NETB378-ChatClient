@@ -17,6 +17,7 @@
 
 package netb378.chatclient;
 
+import java.io.IOException;
 import netb378.chatclient.Server.ChatClientServer;
 
 /**
@@ -30,8 +31,22 @@ public class ChatClientServerInstance {
     
     public ChatClientServerInstance() {
         // start the server instance
+        try {
+            this.serverInstance = new ChatClientServer(8082);
+        }
+        catch(IOException ex) {
+            Log.log(ex.getMessage());
+            System.exit(0);
+        }
         
-        this.serverInstance = new ChatClientServer(8082);
+        while(true) {
+            try {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException ex) {
+                Log.log("Interrupted sleep");
+            }
+        }
         
     }
 }

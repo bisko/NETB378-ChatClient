@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.InputVerifier;
 import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import netb378.chatclient.Log;
 
 /**
@@ -187,25 +188,36 @@ public class ChatClientServerConnectForm extends javax.swing.JFrame {
             Log.log("Generic error: "+ex.getMessage());
             jLabel3.setText("Error: "+ex.getMessage());
             
-            
+            Boolean hasStartedServer = false;
             if (ex.getMessage().contains("refuse")) {
                 // check if the hostname is local, so we can start a server
                 if (this._client.isThisALocalAddress(jTextField1.getText())) {
                     //msgbox
                     int userInput = JOptionPane.showConfirmDialog(null, 
                             "It seems that you want to connect to a local address but\n"
-                                    + "no server wast listning on the specified address.\n\n"
+                                    + "no server wast listening on the specified address.\n\n"
                                     + "Do you want to start a server on port "+jTextField2.getText()+""
                                     + " and connect to it?", "Start a new server?", 
                             JOptionPane.YES_NO_OPTION);
 
                     if (userInput == JOptionPane.YES_OPTION) {
-                        Log.log("Still not implemented :/");
+                        try {
+                            this._client.startServer(Integer.parseInt(jTextField2.getText()));
+                            this._client.connectToServer(jTextField1.getText(), Integer.parseInt(jTextField2.getText()));
+                            hasStartedServer = true;
+                        }
+                        catch (Exception serverException) {
+                            JOptionPane.showMessageDialog(null, ex.getMessage(), "Unable to start server", ERROR_MESSAGE);
+                        }
+                        
+                        
                     }
                     // run server
                 }
             }
-            return;
+            if (!hasStartedServer) {
+                return;
+            }
         }    
         
         this._client.username = jTextField3.getText();
