@@ -233,7 +233,7 @@ public class ChatClientServer {
         String resultingUsername = payload;
         
         while (this.checkExistingUser(resultingUsername)) {
-            resultingUsername = payload + "_"+ rnd.nextInt(999999);;
+            resultingUsername = payload + "-"+ rnd.nextInt(999999);;
         }
                
         return resultingUsername;

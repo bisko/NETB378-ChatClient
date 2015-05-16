@@ -17,6 +17,7 @@
 package netb378.chatclient.Client;
 
 import java.net.UnknownHostException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.InputVerifier;
@@ -41,14 +42,20 @@ public class ChatClientServerConnectForm extends javax.swing.JFrame {
         this.initComponents();
         
         
-        // set input verifiers
+        // server port
         InputVerifier numericVerifier = new ChatClientClientVerifierNumeric();
         jTextField2.setInputVerifier(numericVerifier);
         
+        // server host
         InputVerifier hostnameVerifier = new ChatClientClientVerifierHostName();
         jTextField1.setInputVerifier(hostnameVerifier);
-        
+     
+        // username
         jTextField3.setInputVerifier(hostnameVerifier);
+        
+        // set the username value
+        Random rnd = new Random();
+        jTextField3.setText("Guest-" + rnd.nextInt(99999));
     }
 
     /**
