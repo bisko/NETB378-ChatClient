@@ -48,6 +48,16 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         this._client.formInitted(this);
         
         jLabel2.setText(this._client.getServerInfo());
+        
+        String titleText = "Connected to server: " + this._client.getServerInfo();
+        
+        if (this._client.isThisClientAHost()) {
+            titleText += " (server host) ";
+        }
+        
+        titleText += " using username: " + this._client.username;
+        
+        this.setTitle(titleText);
     }
     
     private void resetFields() {
@@ -56,7 +66,7 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setEditable(false);
         jTextField1.setText("");
-        
+        jTextField1.requestFocus();
     }
 
     /**
@@ -264,9 +274,11 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
 
     void disableAndClearInputs() {
         this.clearInputField();
-        this.resetFields();
         
+        this._userListModel.removeAllElements();
         jTextField1.setEnabled(false);
         jButton1.setEnabled(false);
+        this.setTitle("Disconnected from server");
+        jLabel2.setText("--");
     }
 }

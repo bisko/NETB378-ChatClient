@@ -48,6 +48,10 @@ public final class ChatClientClient {
     public String getServerInfo() {
         return this._clientSocket.getServerConnectString();
     }
+    
+    public Boolean isThisClientAHost() {
+        return this._serverInstance != null;
+    }
     /**
      * 
      * @param server - the server to connect to
@@ -218,6 +222,6 @@ public final class ChatClientClient {
 
     void handleServerDisconnect() {
         this.clientForm.disableAndClearInputs();
-        this.clientForm.appendTAMessage("We have been disconnected from the server!");
+        this.clientForm.appendTAMessage("You have been disconnected from the server!");
     }
 }
