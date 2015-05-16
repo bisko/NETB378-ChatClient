@@ -251,7 +251,7 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         
         for (Integer i = 0; i < this._userListModel.getSize(); i++) {
             if (this._userListModel.getElementAt(i).equals(payloadParts[0])) {
-                this._userListModel.setElementAt(payloadParts[0], i);
+                this._userListModel.remove(i);
             }
         }
         
