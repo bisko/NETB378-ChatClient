@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Biser Perchinkov
+ * Copyright (C) 2015 Biser Perchinkov F44307
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,6 @@ public class NETB378ChatClient {
      */
     public static void main(String[] args) {
         System.out.println("Starting app");
-        
    
         for (Integer i = 0; i < args.length; i++) {
             switch(args[i]) {

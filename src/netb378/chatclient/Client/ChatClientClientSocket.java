@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 bisko
+ * Copyright (C) 2015 Biser Perchinkov F44307
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import netb378.chatclient.Log;
 
 /**
  *
- * @author bisko
+ * @author Biser Perchinkov F44307
  */
 public class ChatClientClientSocket implements Runnable {
     

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 bisko
+ * Copyright (C) 2015 Biser Perchinkov F44307
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import netb378.chatclient.Log;
 
 /**
  *
- * @author bisko
+ * @author Biser Perchinkov F44307
  */
-public class ChatClientServerUser implements Runnable {
+public final class ChatClientServerUser implements Runnable {
     
     private Socket _socket = null;
     private ChatClientServer _server = null;
@@ -97,6 +95,7 @@ public class ChatClientServerUser implements Runnable {
         }
     }
     
+    @Override
     public void run() {
         Boolean done = false;
         
