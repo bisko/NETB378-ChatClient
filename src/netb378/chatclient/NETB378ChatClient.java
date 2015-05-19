@@ -17,7 +17,8 @@
 
 
 /**
- * Variant 1. Simple chat system
+ * Task at hand: Variant 1 - Simple chat system.
+ * 
  * Write a chat server and chat client. The server allows 
  * multiple clients to connect to the server. Use multi-threading 
  * to handle different clients that are connected to the server. 
@@ -26,7 +27,11 @@
 package netb378.chatclient;
 
 /**
- *
+ * Entry point for the chat client and server application.
+ * 
+ * Takes care of the logic that if it should start a server or if it should
+ * start a client instance.
+ * 
  * @author Biser Perchinkov F44307
  */
 public class NETB378ChatClient {
@@ -38,11 +43,14 @@ public class NETB378ChatClient {
     private static ChatClientClientInstance clientInstance = null;
     
     /**
+     * The entry function for the application.
+     * 
      * @param args Arguments to the application
      */
     public static void main(String[] args) {
         System.out.println("Starting app");
    
+        // simple parsing of the parameters
         for (Integer i = 0; i < args.length; i++) {
             switch(args[i]) {
                 case "--server":
@@ -54,6 +62,8 @@ public class NETB378ChatClient {
             }
         }
         
+        // if we have more than one param, there's something 
+        // wrong with the input
         if (args.length > 1 || showHelp) {
             System.out.println(   "Simple Chat client help system\n"
                                 + "-------------------------------------------\n"
@@ -69,6 +79,7 @@ public class NETB378ChatClient {
             serverInstance = new ChatClientServerInstance();
         }
         else {
+            // instance the client
             clientInstance = new ChatClientClientInstance();
         }
     }

@@ -22,36 +22,61 @@ import javax.swing.DefaultListModel;
 import netb378.chatclient.Log;
 
 /**
- *
+ * Chat client's main window logic and handling.
+ * 
+ * This is the main window the user sees when using the chat.
+ * It has all the logic related to user input events and events
+ * that come from the chat server.
+ * 
  * @author Biser Perchinkov F44307
  */
 public class ChatClientClientMainWindow extends javax.swing.JFrame {
     private ChatClientClient _client = null;
     private DefaultListModel _userListModel = null;
     /**
-     * Creates new form ChatClientClientMainWindow
+     * Creates a new form for the chat client.
+     * 
+     * Accepts one parameter - the client instance that created the form.
+     *
+     * 
+     * @param _client the client instance that created the form
      */
     public ChatClientClientMainWindow(ChatClientClient _client) {
         
-        
+        // save the client reference 
         this._client = _client;
         
+        // create the user list model we will use in the form
+        this._userListModel = new DefaultListModel();
+        
+        // initialize the form components
         initComponents();
         
-        // change the jList2 model, because netbeans forces me to do it :) 
-        // uneditable code in the initComponents method.
-        this._userListModel = new DefaultListModel();
-        jList2.setModel(this._userListModel);
-       
-        
+        // reset the field values
         this.resetFields();
+        
+        /*
+          Send an event to the client instance that the form has been 
+          initialized, so we can handle the on connection logic 
+        */
         this._client.formInitted(this);
         
+        
+        // update the little label under the user list to show server info
         jLabel2.setText(this._client.getServerInfo());
         
+        
+        // update the window title to show information about the connection
         this.updateWindowTitle();
     }
     
+    
+    /**
+     * Reset the form fields.
+     * 
+     * Clears and resets the values and status of the form fields.
+     * 
+     */
     private void resetFields() {
         this._userListModel.clear();
         jTextArea1.setText("");
@@ -60,7 +85,10 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         jTextArea1.setLineWrap(true);
         jTextArea1.setWrapStyleWord(true);
         
+        // disable editing of the text area
         jTextArea1.setEditable(false);
+        
+        // reset the user input field and get the focus in it
         jTextField1.setText("");
         jTextField1.requestFocus();
     }
@@ -102,11 +130,7 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        jList2.setModel(this._userListModel);
         jScrollPane3.setViewportView(jList2);
 
         jLabel1.setText("Server:");
@@ -156,21 +180,39 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Handle the "Send" button events. 
+     * 
+     * It is fired when the user clicks the Send button on the form.
+     * 
+     * @param evt The event that occurred on the button
+     */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this._client.handleUserInput(jTextField1.getText());
+        this.clearInputField();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    /**
+     * Handle user input on the text field.
+     * 
+     * It is fired when the user submits the text field.
+     * 
+     * @param evt The event that occurred on the text field
+     */
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
         this._client.handleUserInput(jTextField1.getText());
+        this.clearInputField();
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
-     * @param args the command line arguments
+     * Run the main window form.
+     * 
+     * Start the main window form thread.
+     * 
+     * @param _client the client that instanced the form
      */
     public static void main(ChatClientClient _client) {
-        /* Set the Nimbus look and feel */
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -190,55 +232,113 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Handle protocol event when user joins the chat.
+     * 
+     * Handles the event when the servers sends a join event.
+     * 
+     * @param payload String containing the username that joined
+     */
     void protocolJoinUser(String payload) {
         this._userListModel.addElement(payload);
         this.appendTAMessage("Joined user \""+payload+"\"");
     }
 
-    void protocolNickChange(String payloadPart, String payloadPart0) {
-        Log.log("Nick change from "+payloadPart+" to "+payloadPart0);
+    /**
+     * Handle protocol event when user changes names.
+     * 
+     * Handles the event when the server sends a nick change event.
+     * 
+     * @param oldUsername String containing the old username
+     * @param newUsername String containing the new username
+     */
+    void protocolNickChange(String oldUsername, String newUsername) {
+        Log.log("Nick change from " + oldUsername + " to " + newUsername);
         
-        if (payloadPart == this._client.username) {
-            this._client.username = payloadPart0;
+        // if we are chaning our username - update the client instance too
+        if (oldUsername == this._client.username) {
+            this._client.username = newUsername;
         }
         
+        // update the userlist 
         for (Integer i = 0; i < this._userListModel.getSize(); i++) {
-            if (this._userListModel.getElementAt(i).equals(payloadPart)) {
-                this._userListModel.setElementAt(payloadPart0, i);
+            if (this._userListModel.getElementAt(i).equals(oldUsername)) {
+                this._userListModel.setElementAt(newUsername, i);
             }
         }
         
-        this.appendTAMessage("User \""+payloadPart+"\" is now known as \""+payloadPart0+"\"");
+        // update the log
+        this.appendTAMessage("User \""+oldUsername+"\" is now known as \""+newUsername+"\"");
     }
 
 
+    /**
+     * Handles NAMES event from the server.
+     * 
+     * The names event sends all the nicknames currently connected to
+     * the server. 
+     * Here we parse them and add them to the user list.
+     * 
+     * @param payload String with all the usernames sent by the server
+     */
     void protocolNamesList(String payload) {
+        // clear the user list model - empty the list
         this._userListModel.clear();
         
+        // split the names as they are all concatenated in the string
         String[] names = payload.split(" ");
         
+        // add the username to the list
         for (String name : names) {
             this._userListModel.addElement(name);
         }
     }
 
+    /**
+     * Handle invalid server event.
+     * 
+     * When the server server sends us an invalid event, we handle it here
+     * by showing a message to the user.
+     * 
+     * @param payload String with the event the server sent us.
+     */
     void invalidServerMessage(String payload) {
         this.appendTAMessage("Invalid message from server: "+payload);
         
     }
     
+    /**
+     * Appends a line/message to the main text area.
+     * 
+     * Append a message to the main text area, with formatted timestamp 
+     * prepended to the message.
+     * 
+     * @param payload String to append to the text area
+     */
     void appendTAMessage(String payload) {
         
+        // prepare the timestamp prefix
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
         Date now = new Date();
         String strDate = sdfDate.format(now);
         
-        payload = "["+strDate+"] "+payload.trim();
+        // apply the timestamp prefix
+        payload = "["+strDate+"] " + payload.trim();
         
+        // append the payload to the main text area
         this.jTextArea1.append(payload+"\n");
+        
+        // move the caret to the end - used to simulate "scroll to the bottom"
         this.jTextArea1.setCaretPosition(this.jTextArea1.getText().length());
     }
 
+    /**
+     * Handle normal messages sent from other users.
+     * 
+     * When the server sends us an event with a message from another user
+     * 
+     * @param payload String containing the message with the format "user<space>message"
+     */
     void protocolMessage(String payload) {
         
         // replace the first space with a separator in order to show it in the window
@@ -247,6 +347,14 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         this.appendTAMessage(payload);
     }
 
+    /**
+     * Handle quit event sent from the server.
+     * 
+     * Handle quit event sent from the server. It is fired when another user
+     * quits the chat.
+     * 
+     * @param payload String containing the quit event 
+     */
     void protocolQuit(String payload) {
         
         // used just to extract the username from the payload
@@ -255,6 +363,7 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         // lazy message formatting
         payload = payload.replaceFirst(" ", ": ");
         
+        // remove the user from the userlist
         for (Integer i = 0; i < this._userListModel.getSize(); i++) {
             if (this._userListModel.getElementAt(i).equals(payloadParts[0])) {
                 this._userListModel.remove(i);
@@ -264,10 +373,20 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         this.appendTAMessage("QUIT: "+payload);
     }
 
+    /**
+     * Clear the input field for the user. 
+     */
     void clearInputField() {
         jTextField1.setText("");
     }
 
+    /**
+     * Disable and clear all the inputs when disconnected from server.
+     * 
+     * Disable all the inputs the user can use. Clear all the lists.
+     * Update the title bar to show that we have disconnected.
+     * 
+     */
     void disableAndClearInputs() {
         this.clearInputField();
         
@@ -278,11 +397,28 @@ public class ChatClientClientMainWindow extends javax.swing.JFrame {
         jLabel2.setText("--");
     }
 
+    /**
+     * Handle nick collision event sent from the server.
+     * 
+     * Inform the user of the nick collision that occurred and show 
+     * the new username that the server sent.
+     * @param payload String containing the new username 
+     */
     void protocolForceNick(String payload) {
         this.appendTAMessage("Colliding username, changed to: "+payload);
         this.updateWindowTitle();
     }
 
+    /**
+     * Update the window title to show more information.
+     * 
+     * Updates the window title to show more information about the 
+     * connection we are currently using.
+     * 
+     * - Shows the server info - host and port.
+     * - If we are the server host.
+     * - What is our current username.
+     */
     private void updateWindowTitle() {
         String titleText = "Connected to server: " + this._client.getServerInfo();
         

@@ -21,14 +21,26 @@ import java.io.IOException;
 import netb378.chatclient.Server.ChatClientServer;
 
 /**
- * Handle everything chat server related
+ * Handles the creation of the chat client server instance
+ * that is spawned from the main class.
  * 
  * @author Biser Perchinkov F44307
  */
 public class ChatClientServerInstance {    
     
-    ChatClientServer serverInstance = null;
+    /**
+     * The local server instance that is run.
+     */
+    private ChatClientServer serverInstance = null;
     
+    
+    /**
+     * Class constructor for the server instance.
+     * 
+     * This is where the actual initialization of the server happens.
+     * After initializing the server, the thread sleeps indefinitely.
+     * 
+     */
     public ChatClientServerInstance() {
         // start the server instance
         try {
@@ -39,6 +51,10 @@ public class ChatClientServerInstance {
             System.exit(0);
         }
         
+        /**
+         * sleep indefinitely to keep the process alive, while the server does
+         * it's thing
+        */ 
         while(true) {
             try {
                 Thread.sleep(1000);

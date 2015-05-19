@@ -19,7 +19,9 @@ package netb378.chatclient;
 import java.lang.System;
 
 /**
- *
+ * Handles all the logging functions for the chat client and server.
+ * 
+ * It is basically a simple class that outputs things to the stdout.
  * @author Biser Perchinkov F44307
  */
 public class Log {

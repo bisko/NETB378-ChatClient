@@ -21,7 +21,8 @@ package netb378.chatclient;
 import netb378.chatclient.Client.ChatClientClient;
 
 /**
- *
+ * Handles the application client instance
+ * 
  * @author Biser Perchinkov F44307
  */
 public class ChatClientClientInstance {
