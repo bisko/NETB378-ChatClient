@@ -21,10 +21,22 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 /**
- *
+ * Input verifier for a hostname.
+ * 
+ * Validates the input for a valid hostname.
+ * 
  * @author Biser Perchinkov F44307
  */
 public class ChatClientClientVerifierHostName extends InputVerifier {
+    
+    /**
+     * Verify the input data.
+     * 
+     * Verifies the input data against a regexp for validity of a host.
+     * 
+     * @param input The string to check for a valid hostname
+     * @return If we have a valid hostname or not.
+     */
     @Override
     public boolean verify(JComponent input) {
        String text = ((JTextField) input).getText();

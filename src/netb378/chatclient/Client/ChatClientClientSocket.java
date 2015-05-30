@@ -25,7 +25,10 @@ import java.net.Socket;
 import netb378.chatclient.Log;
 
 /**
- *
+ * Handle socket communication for the chat client.
+ * 
+ * Manages the socket connection for the chat client.
+ * 
  * @author Biser Perchinkov F44307
  */
 public class ChatClientClientSocket implements Runnable {
@@ -40,7 +43,16 @@ public class ChatClientClientSocket implements Runnable {
     private String server = "";
     private Integer port = 0;
     
-    
+    /**
+     * Initialize the socket by connecting to a certain server and port.
+     * 
+     * Connect to a server and port specified by the input parameters.
+     * 
+     * @param server The server to connect to
+     * @param port The port to connect to
+     * @param _client Client instance that will handle the socket events
+     * @throws IOException In case of socket errors
+     */
     public ChatClientClientSocket (String server, Integer port, ChatClientClient _client) throws IOException {
         if (this._socket != null) {
             try {
@@ -57,11 +69,27 @@ public class ChatClientClientSocket implements Runnable {
         this.port = port;
     }
     
+    /**
+     * Get the server connection string.
+     * 
+     * Returns a server connection string in the format host:port
+     * 
+     * @return Server connection string
+     */
     public String getServerConnectString() {
         return this.server+":"+port;
     }
     
-    
+    /**
+     * Initialize the socket when we have a successful connection.
+     * 
+     * Initializes the socket components when we successfully connect
+     * to a server. 
+     * 
+     * Set up the data input streams and start the socket thread.
+     * 
+     * @param _client The client that handles the socket events
+     */
     private void initializeSocket(ChatClientClient _client) {
         Log.log("initializing socket");
         this._client = _client;
@@ -80,6 +108,12 @@ public class ChatClientClientSocket implements Runnable {
         
         this.startThread();
     }
+    
+    /**
+     * Socket loop.
+     * 
+     * Listens for socket events and data from the server.
+     */
     public void run () {
         while (this._socket != null) {
             Log.log("Reading..");
@@ -97,6 +131,11 @@ public class ChatClientClientSocket implements Runnable {
         }
     }
     
+    /**
+     * Start a the socket thread.
+     * 
+     * Starts the socket thread if we haven't already started it.
+     */
     public void startThread() {
         if (this._thread == null) {
             this._thread = new Thread(this);
@@ -104,6 +143,14 @@ public class ChatClientClientSocket implements Runnable {
         }
     }
     
+    /**
+     * Send a message to the server.
+     * 
+     * Sends a message to the server. It is synchronized so we don't 
+     * mess up the data if a race condition occurs in sending said data.
+     * 
+     * @param message The message to be sent to the server
+     */
     public synchronized void send(String message) {
         if (this._socket != null) {
             try {
@@ -117,6 +164,12 @@ public class ChatClientClientSocket implements Runnable {
         }
     }
     
+    /**
+     * Close the socket.
+     * 
+     * Close the socket and destroy the I/O streams, the socket and the thread.
+     * 
+     */
     public synchronized void close() {
         try{
             this.streamIn.close();

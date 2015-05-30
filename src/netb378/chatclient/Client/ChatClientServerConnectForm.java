@@ -18,15 +18,17 @@ package netb378.chatclient.Client;
 
 import java.net.UnknownHostException;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.InputVerifier;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import netb378.chatclient.Log;
 
 /**
- *
+ * Connect form class for the chat client.
+ * 
+ * Handles the connect form that the user sees when
+ * starting the chat client.
+ * 
  * @author Biser Perchinkov F44307
  */
 public class ChatClientServerConnectForm extends javax.swing.JFrame {
@@ -174,14 +176,33 @@ public class ChatClientServerConnectForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Unneeded method.
+     * 
+     * Sometimes Netbeans tries to be helpful. This method proves it is not.
+     * 
+     * @param evt The event that occurred.
+     */
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
+    /**
+     * Handle Connect button actions.
+     * 
+     * Handle the checks and perform the necessary actions for the 
+     * connect button.
+     * 
+     * @param evt The event that occurs.
+     */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+
         Log.log("Button clicked "+evt);
+        
+// clear the error label
         jLabel3.setText("");
+
+        // Try to connect the server and handle the appropriate error messages.
         try {
             this._client.connectToServer(jTextField1.getText(), Integer.parseInt(jTextField2.getText()));
         }
@@ -207,8 +228,10 @@ public class ChatClientServerConnectForm extends javax.swing.JFrame {
                                     + " and connect to it?", "Start a new server?", 
                             JOptionPane.YES_NO_OPTION);
 
+                    // if the user chose to start a server
                     if (userInput == JOptionPane.YES_OPTION) {
                         try {
+                            // start a server
                             this._client.startServer(Integer.parseInt(jTextField2.getText()));
                             this._client.connectToServer(jTextField1.getText(), Integer.parseInt(jTextField2.getText()));
                             hasStartedServer = true;
@@ -223,6 +246,8 @@ public class ChatClientServerConnectForm extends javax.swing.JFrame {
                 }
             }
             if (!hasStartedServer) {
+                // do not continue code execution as it is not needed
+                // when the server is not started or error on connect
                 return;
             }
         }    
@@ -237,16 +262,28 @@ public class ChatClientServerConnectForm extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    /**
+     * Handle the quit button.
+     * 
+     * Quit the application when the user presses the quit button.
+     * 
+     * @param evt 
+     */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
-     * @param args the command line arguments
+     * Runs the connect window form.
+     * 
+     * Starts the connect window form and it's thread.
+     * 
+     * @param chatClient 
      */
     public static void main(ChatClientClient chatClient) {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new ChatClientServerConnectForm(chatClient).setVisible(true);
             }

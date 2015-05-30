@@ -21,10 +21,22 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 /**
- *
+ * Input verifier for numeric values.
+ * 
+ * Verify that the input has a numeric value.
+ * 
  * @author Biser Perchinkov F44307
  */
 public class ChatClientClientVerifierNumeric extends InputVerifier {
+    
+    /**
+     * Verify the input for a numeric value.
+     * 
+     * Checks if the input has a valid numeric value.
+     * 
+     * @param input The input to check 
+     * @return If the value is numeric or not
+     */
     @Override
     public boolean verify(JComponent input) {
        String text = ((JTextField) input).getText();
