@@ -19,12 +19,14 @@ package netb378.chatclient.Server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 import netb378.chatclient.Log;
 
 /**
- * Connection pool to carry out the socket handling
- * It threads for every socket that happens
+ * Connection pool to carry out the socket handling.
+ * 
+ * Handles the server socket and listens for connections to it.
+ * For every new connection, we start a thread that listens 
+ * for events on the connection.
  *
  * @author Biser Perchinkov F44307
  */
@@ -34,6 +36,15 @@ public class ChatClientServerConnectionPool implements Runnable {
     private ServerSocket _serverSocket = null;
     private Thread      _thread = null;
         
+    /**
+     * Initialize the connection pool.
+     * 
+     * Initializes the connection pool.
+     * 
+     * @param _server Server object that this pool is part of
+     * @param port The port that the socket should listen on
+     * @throws IOException 
+     */
     public ChatClientServerConnectionPool(ChatClientServer _server, Integer port) throws IOException {
         
         this._server = _server;
@@ -52,6 +63,9 @@ public class ChatClientServerConnectionPool implements Runnable {
         
     }
     
+    /**
+     * Start the server socket thread.
+     */
     public void startThread() {
         if (this._thread == null) {
             this._thread = new Thread(this);
@@ -59,6 +73,13 @@ public class ChatClientServerConnectionPool implements Runnable {
         }
     }
     
+    /**
+     * Main thread action.
+     * 
+     * Listens for new connections, accepts them and adds
+     * a user to the user list.
+     */
+    @Override
     public void run() {
         
         while (this._thread != null) {
@@ -71,7 +92,7 @@ public class ChatClientServerConnectionPool implements Runnable {
                 
                 this._server.addClientFromSocket(tmpSock);
                 
-                // free the socket, so we can
+                // free the socket, so we don't hold memory for it.
                 tmpSock = null;
             }
             catch (IOException ex) {

@@ -16,8 +16,6 @@
  */
 package netb378.chatclient;
 
-import java.lang.System;
-
 /**
  * Handles all the logging functions for the chat client and server.
  * 
@@ -25,6 +23,14 @@ import java.lang.System;
  * @author Biser Perchinkov F44307
  */
 public class Log {
+    
+    /**
+     * Log a message to the standard output.
+     * 
+     * Logs a message to stdout.
+     * 
+     * @param message the message to log to stdout.
+     */
     static public void log(String message) {
         System.out.print("LOG: ");
         System.out.println(message);

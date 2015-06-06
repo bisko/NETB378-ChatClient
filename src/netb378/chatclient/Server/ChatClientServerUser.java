@@ -25,7 +25,8 @@ import java.net.Socket;
 import netb378.chatclient.Log;
 
 /**
- *
+ * Handles user interaction with the server.
+ * 
  * @author Biser Perchinkov F44307
  */
 public final class ChatClientServerUser implements Runnable {
